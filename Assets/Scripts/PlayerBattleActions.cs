@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Animator))]
 public class PlayerBattleActions : MonoBehaviour
@@ -16,10 +17,7 @@ public class PlayerBattleActions : MonoBehaviour
     [SerializeField] private CombatantHealth enemyHealth;
     [SerializeField] private float moveSpeed = 6f;
     [SerializeField] private float stoppingDistance = 1.1f;
-
-    [Header("Damage")]
-    [SerializeField] private int attackDamage = 20;
-    [SerializeField] private int doubleAttackDamage = 40;
+    [SerializeField] private PlayerSkillSet skillSet;
 
     [Header("Animation Timing")]
     [SerializeField] private float attack1Duration = 0.55f;
@@ -31,11 +29,23 @@ public class PlayerBattleActions : MonoBehaviour
     [SerializeField] private int defaultSortingOrder = 5;
     [SerializeField] private int activeAttackerSortingOrder = 10;
 
+    [Header("Victory UI")]
+    [SerializeField] private VictoryRewardPanel victoryRewardPanel;
+    [SerializeField] private bool autoFindVictoryRewardPanel = true;
+
+    [Header("Action Menu")]
+    [SerializeField] private GameObject actionMenuRoot;
+    [SerializeField] private bool autoFindActionMenu = true;
+
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private SpriteRenderer enemySpriteRenderer;
     private Vector3 startPosition;
     private Coroutine currentAction;
+    private bool battleEnded;
+    private bool victoryPending;
+    private float nextAttackDamageMultiplier = 1f;
+    private Button[] actionMenuButtons;
 
     private void Awake()
     {
@@ -48,6 +58,8 @@ public class PlayerBattleActions : MonoBehaviour
     {
         RefreshEnemyRenderer();
         ResetSortingOrder();
+        RefreshActionMenuButtons();
+        SetActionMenuInteractable(true);
 
         if (enemyActions == null)
         {
@@ -59,6 +71,16 @@ public class PlayerBattleActions : MonoBehaviour
             playerHealth = GetComponent<CombatantHealth>();
         }
 
+        if (skillSet == null)
+        {
+            skillSet = GetComponent<PlayerSkillSet>();
+        }
+
+        if (skillSet == null)
+        {
+            skillSet = gameObject.AddComponent<PlayerSkillSet>();
+        }
+
         if (playerHealth == null)
         {
             Debug.LogWarning("PlayerBattleActions: Player Health is not assigned.", this);
@@ -68,34 +90,72 @@ public class PlayerBattleActions : MonoBehaviour
         {
             Debug.LogWarning("PlayerBattleActions: Enemy Health is not assigned.", this);
         }
+        else
+        {
+            enemyHealth.Defeated += HandleEnemyDefeated;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (enemyHealth != null)
+        {
+            enemyHealth.Defeated -= HandleEnemyDefeated;
+        }
     }
 
     public void Attack()
     {
+        if (!CanStartPlayerAction())
+        {
+            return;
+        }
+
         Debug.Log("player action: attack", this);
         StartAction(AttackRoutine(false));
     }
 
     public void DoubleAttack()
     {
+        if (!CanStartPlayerAction())
+        {
+            return;
+        }
+
         Debug.Log("player action: double attack", this);
         StartAction(AttackRoutine(true));
     }
 
     public void Defend()
     {
+        if (!CanStartPlayerAction())
+        {
+            return;
+        }
+
         Debug.Log("player action: guard", this);
         StartAction(DefendRoutine());
     }
 
     public void Boost()
     {
-        // Reserved for a later skill.
+        if (!CanStartPlayerAction())
+        {
+            return;
+        }
+
+        Debug.Log("player action: boost", this);
+        StartAction(BoostRoutine());
     }
 
     private void StartAction(IEnumerator action)
     {
-        StopCurrentAction();
+        if (!CanStartPlayerAction())
+        {
+            return;
+        }
+
+        SetActionMenuInteractable(false);
 
         if (enemyActions == null)
         {
@@ -145,14 +205,33 @@ public class PlayerBattleActions : MonoBehaviour
             yield return new WaitForSeconds(attack2Duration);
         }
 
-        int damage = useSecondAttack ? doubleAttackDamage : attackDamage;
         if (enemyHealth == null)
         {
-            Debug.LogWarning($"PlayerBattleActions cannot deal {damage} damage because Enemy Health is not assigned.", this);
+            Debug.LogWarning("PlayerBattleActions cannot deal damage because Enemy Health is not assigned.", this);
         }
         else
         {
-            enemyHealth.TakeDamage(damage);
+            if (useSecondAttack)
+            {
+                RuntimeSkill skill = skillSet.GetSkill(SkillId.DoubleAttack);
+                int damagePerHit = GetModifiedDamage(skill.DamagePerHit);
+                for (int hitIndex = 0; hitIndex < skill.HitCount; hitIndex++)
+                {
+                    enemyHealth.TakeDamage(damagePerHit);
+
+                    if (enemyHealth.IsDefeated)
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                RuntimeSkill skill = skillSet.GetSkill(SkillId.Attack);
+                enemyHealth.TakeDamage(GetModifiedDamage(skill.BasePower));
+            }
+
+            nextAttackDamageMultiplier = 1f;
         }
 
         yield return new WaitForSeconds(pauseBeforeReturn);
@@ -162,18 +241,28 @@ public class PlayerBattleActions : MonoBehaviour
         FaceEnemy();
         ResetSortingOrder();
 
+        if (victoryPending)
+        {
+            ShowVictoryPanel();
+            currentAction = null;
+            yield break;
+        }
+
         if (enemyActions != null)
         {
             yield return StartCoroutine(enemyActions.PlayChosenAction());
         }
 
         currentAction = null;
+        SetActionMenuInteractable(true);
     }
 
     private IEnumerator DefendRoutine()
     {
         animator.SetBool(IsMovingHash, false);
         FaceEnemy();
+        RuntimeSkill guardSkill = skillSet.GetSkill(SkillId.Guard);
+        playerHealth?.SetGuardDamageMultiplier(guardSkill.GuardDamageMultiplier);
         playerHealth?.SetGuarding(true);
         animator.SetBool(IsGuardingHash, true);
 
@@ -190,6 +279,30 @@ public class PlayerBattleActions : MonoBehaviour
 
         playerHealth?.SetGuarding(false);
         currentAction = null;
+        SetActionMenuInteractable(true);
+    }
+
+    private IEnumerator BoostRoutine()
+    {
+        animator.SetBool(IsMovingHash, false);
+        FaceEnemy();
+
+        RuntimeSkill boostSkill = skillSet.GetSkill(SkillId.Boost);
+        if (boostSkill.NextAttackDamageBonus > 0f)
+        {
+            nextAttackDamageMultiplier = Mathf.Max(nextAttackDamageMultiplier, 1f + boostSkill.NextAttackDamageBonus);
+            Debug.Log($"boost empowered next attack. Multiplier: {nextAttackDamageMultiplier}", this);
+        }
+
+        yield return new WaitForSeconds(guardDuration);
+
+        if (enemyActions != null)
+        {
+            yield return StartCoroutine(enemyActions.PlayChosenAction());
+        }
+
+        currentAction = null;
+        SetActionMenuInteractable(true);
     }
 
     private Vector3 GetAttackPosition()
@@ -277,5 +390,145 @@ public class PlayerBattleActions : MonoBehaviour
         {
             enemySpriteRenderer = enemy.GetComponent<SpriteRenderer>();
         }
+    }
+
+    private void HandleEnemyDefeated(CombatantHealth defeatedCombatant)
+    {
+        battleEnded = true;
+        victoryPending = true;
+        SetActionMenuInteractable(false);
+    }
+
+    private void ShowVictoryPanel()
+    {
+        if (victoryRewardPanel == null && autoFindVictoryRewardPanel)
+        {
+            victoryRewardPanel = FindFirstObjectByType<VictoryRewardPanel>(FindObjectsInactive.Include);
+        }
+
+        if (victoryRewardPanel == null)
+        {
+            Debug.LogWarning("PlayerBattleActions cannot show victory UI because Victory Reward Panel is not assigned.", this);
+            return;
+        }
+
+        victoryRewardPanel.Show(this);
+    }
+
+    /// <summary>Applies a modifier from the library to the player's skill set and resets the battle.</summary>
+    public void ApplyModifierReward(ModifierDefinition modifier)
+    {
+        if (modifier == null)
+        {
+            Debug.LogWarning("PlayerBattleActions: ApplyModifierReward called with null modifier.", this);
+            return;
+        }
+
+        string log = skillSet.ApplyModifier(modifier);
+        Debug.Log($"Modifier reward applied: {modifier.DisplayName}. {log}", this);
+        ResetBattleForNextTry();
+    }
+
+    public PlayerSkillSet SkillSet => skillSet;
+
+    private int GetModifiedDamage(int baseDamage)
+    {
+        return Mathf.CeilToInt(baseDamage * nextAttackDamageMultiplier);
+    }
+
+    private void ResetBattleForNextTry()
+    {
+        battleEnded = false;
+        victoryPending = false;
+        nextAttackDamageMultiplier = 1f;
+        currentAction = null;
+
+        playerHealth?.SetGuarding(false);
+        playerHealth?.ResetHealth();
+        enemyHealth?.SetGuarding(false);
+        enemyHealth?.ResetHealth();
+
+        transform.position = startPosition;
+        animator.SetBool(IsMovingHash, false);
+        animator.SetBool(IsGuardingHash, false);
+        FaceEnemy();
+        ResetSortingOrder();
+        SetActionMenuInteractable(true);
+
+        Debug.Log("Battle reset after reward selection. Player and enemy health restored for another test.", this);
+    }
+
+    private bool CanStartPlayerAction()
+    {
+        return !battleEnded && currentAction == null;
+    }
+
+    private void SetActionMenuInteractable(bool interactable)
+    {
+        RefreshActionMenuButtons();
+
+        if (actionMenuButtons == null)
+        {
+            return;
+        }
+
+        foreach (Button button in actionMenuButtons)
+        {
+            if (button != null)
+            {
+                button.interactable = interactable;
+            }
+        }
+    }
+
+    private void RefreshActionMenuButtons()
+    {
+        if (actionMenuRoot == null && autoFindActionMenu)
+        {
+            Transform actionMenu = FindChildRecursive("ActionMenu");
+            if (actionMenu != null)
+            {
+                actionMenuRoot = actionMenu.gameObject;
+            }
+        }
+
+        if (actionMenuRoot != null && (actionMenuButtons == null || actionMenuButtons.Length == 0))
+        {
+            actionMenuButtons = actionMenuRoot.GetComponentsInChildren<Button>(true);
+        }
+    }
+
+    private Transform FindChildRecursive(string childName)
+    {
+        GameObject[] roots = gameObject.scene.GetRootGameObjects();
+        foreach (GameObject root in roots)
+        {
+            Transform child = FindChildRecursive(root.transform, childName);
+            if (child != null)
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    private Transform FindChildRecursive(Transform parent, string childName)
+    {
+        if (parent.name == childName)
+        {
+            return parent;
+        }
+
+        foreach (Transform child in parent)
+        {
+            Transform result = FindChildRecursive(child, childName);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        return null;
     }
 }

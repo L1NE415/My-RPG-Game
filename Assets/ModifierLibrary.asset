@@ -1,0 +1,439 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615677e811ad6a149b77f750e33bf56c, type: 3}
+  m_Name: ModifierLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::ModifierLibrary
+  _definitions:
+  - _effectType: 0
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Energy on Use
+    _description: Restore 1 energy when this skill is used.
+    _primaryValue: 1
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 1
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Desperation Cost
+    _description: "For every 10% HP lost, this skill's cost \u22121."
+    _primaryValue: 1
+    _secondaryValue: 0.1
+    _targetStatus: 0
+  - _effectType: 2
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Desperation Power
+    _description: For every 5% HP lost, skill power +5%.
+    _primaryValue: 0.05
+    _secondaryValue: 0.05
+    _targetStatus: 0
+  - _effectType: 3
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Dominant Power
+    _description: If HP > 50%, skill power +20.
+    _primaryValue: 20
+    _secondaryValue: 0.5
+    _targetStatus: 0
+  - _effectType: 4
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Counter Follow-Up
+    _description: If a counter succeeded last turn, skill power +20.
+    _primaryValue: 20
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 5
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Guard Follow-Up
+    _description: If a Defense skill was used last turn, skill power +20.
+    _primaryValue: 20
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 6
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Counter Fury
+    _description: 'Each successful counter: skill power permanently +5.'
+    _primaryValue: 5
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 7
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Practiced Strike
+    _description: 'Each use: skill power permanently +2.'
+    _primaryValue: 2
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 8
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Hunter's Edge
+    _description: 'Each enemy defeated: skill power permanently +10.'
+    _primaryValue: 10
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 9
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Kill Energy
+    _description: If this skill defeats an enemy, restore 2 energy.
+    _primaryValue: 2
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 10
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Ignite
+    _description: Apply 2 Burn stacks to the enemy.
+    _primaryValue: 2
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 10
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Envenom
+    _description: Apply 2 Poison stacks to the enemy.
+    _primaryValue: 2
+    _secondaryValue: 0
+    _targetStatus: 1
+  - _effectType: 10
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Chill
+    _description: Apply 2 Freeze stacks to the enemy.
+    _primaryValue: 2
+    _secondaryValue: 0
+    _targetStatus: 2
+  - _effectType: 11
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Multi-Ignite
+    _description: Each hit applies 1 Burn stack.
+    _primaryValue: 1
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 12
+    _applicableCategory: 0
+    _isCounterSlot: 0
+    _displayName: Status Exploit
+    _description: +10 power per stack of any status effect on the enemy.
+    _primaryValue: 10
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 17
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Burst
+    _description: "On counter: damage +100%. If no counter: \u221250%."
+    _primaryValue: 1
+    _secondaryValue: 0.5
+    _targetStatus: 0
+  - _effectType: 18
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Interrupt
+    _description: Cancel the enemy's countered skill before it resolves.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 13
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Swift Counter
+    _description: Gain 1 extra action this turn.
+    _primaryValue: 1
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 19
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Stun
+    _description: Stun the enemy for 1 turn.
+    _primaryValue: 1
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 20
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Extra Hit
+    _description: Increase hit count by 1 on counter.
+    _primaryValue: 1
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 21
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Hit Doubler
+    _description: Double this skill's hit count on counter.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 16
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Status Amplifier
+    _description: Double all enemy status stacks on counter.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 22
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Refund
+    _description: Refund this skill's energy cost on counter.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 23
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Drain
+    _description: Heal for 50% of damage dealt on counter.
+    _primaryValue: 0.5
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 24
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Empower
+    _description: Own Attack +50% on counter.
+    _primaryValue: 0.5
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 25
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Fortify
+    _description: Own Defense +50% on counter.
+    _primaryValue: 0.5
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 14
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Weaken
+    _description: "Enemy Attack \u221250% on counter."
+    _primaryValue: 0.5
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 15
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Shatter
+    _description: "Enemy Defense \u221250% on counter."
+    _primaryValue: 0.5
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 26
+    _applicableCategory: 0
+    _isCounterSlot: 1
+    _displayName: Counter Dispel
+    _description: Remove all enemy buffs on counter.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 27
+    _applicableCategory: 1
+    _isCounterSlot: 0
+    _displayName: Blood Price
+    _description: When energy is insufficient, consume 5% HP instead of 1 energy.
+    _primaryValue: 0.05
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 28
+    _applicableCategory: 1
+    _isCounterSlot: 0
+    _displayName: Follow-Through Guard
+    _description: If an Attack skill was used last turn, Guard costs 0 energy.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 29
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Parry Empower
+    _description: "Next attack power \xD72 on counter."
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 30
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Pain to Strength
+    _description: Own Attack +10% per hit received while guarding.
+    _primaryValue: 0.1
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 31
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Pain to Armor
+    _description: Own Defense +10% per hit received while guarding.
+    _primaryValue: 0.1
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 14
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Parry Weaken
+    _description: "Enemy Attack \u221250% on counter."
+    _primaryValue: 0.5
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 15
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Parry Shatter
+    _description: "Enemy Defense \u221250% on counter."
+    _primaryValue: 0.5
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 32
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Last Stand
+    _description: When receiving fatal damage this turn, survive with 1 HP.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 33
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Energy Siphon
+    _description: Restore energy equal to the countered skill's cost.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 34
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Absorb
+    _description: Damage mitigated while guarding is converted to HP recovery.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 35
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Reflect
+    _description: Interrupt the countered skill; deal damage equal to its base power.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 13
+    _applicableCategory: 1
+    _isCounterSlot: 1
+    _displayName: Parry Counter
+    _description: Gain 1 extra action after a successful counter.
+    _primaryValue: 1
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 36
+    _applicableCategory: 2
+    _isCounterSlot: 0
+    _displayName: Battle Cry
+    _description: Own Attack +50% for 2 turns.
+    _primaryValue: 0.5
+    _secondaryValue: 2
+    _targetStatus: 0
+  - _effectType: 37
+    _applicableCategory: 2
+    _isCounterSlot: 0
+    _displayName: Iron Skin
+    _description: Own Defense +50% for 2 turns.
+    _primaryValue: 0.5
+    _secondaryValue: 2
+    _targetStatus: 0
+  - _effectType: 14
+    _applicableCategory: 2
+    _isCounterSlot: 0
+    _displayName: Curse
+    _description: "Enemy Attack \u221230%."
+    _primaryValue: 0.3
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 15
+    _applicableCategory: 2
+    _isCounterSlot: 0
+    _displayName: Break Armor
+    _description: "Enemy Defense \u221230%."
+    _primaryValue: 0.3
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 10
+    _applicableCategory: 2
+    _isCounterSlot: 0
+    _displayName: Ignite (Status)
+    _description: Apply 3 Burn stacks to the enemy.
+    _primaryValue: 3
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 10
+    _applicableCategory: 2
+    _isCounterSlot: 0
+    _displayName: Envenom (Status)
+    _description: Apply 3 Poison stacks to the enemy.
+    _primaryValue: 3
+    _secondaryValue: 0
+    _targetStatus: 1
+  - _effectType: 10
+    _applicableCategory: 2
+    _isCounterSlot: 0
+    _displayName: Chill (Status)
+    _description: Apply 3 Freeze stacks to the enemy.
+    _primaryValue: 3
+    _secondaryValue: 0
+    _targetStatus: 2
+  - _effectType: 38
+    _applicableCategory: 2
+    _isCounterSlot: 1
+    _displayName: Status Interrupt
+    _description: Cancel the enemy's countered skill; enemy is stunned next turn.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 39
+    _applicableCategory: 2
+    _isCounterSlot: 1
+    _displayName: Buff Amplifier
+    _description: Own buff effects are doubled this turn.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 40
+    _applicableCategory: 2
+    _isCounterSlot: 1
+    _displayName: Status Dispel
+    _description: Remove all enemy buffs on counter.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 16
+    _applicableCategory: 2
+    _isCounterSlot: 1
+    _displayName: Status Surge
+    _description: Double all enemy status stacks on counter.
+    _primaryValue: 0
+    _secondaryValue: 0
+    _targetStatus: 0
+  - _effectType: 13
+    _applicableCategory: 2
+    _isCounterSlot: 1
+    _displayName: Status Counter
+    _description: Gain 1 extra action after a successful counter.
+    _primaryValue: 1
+    _secondaryValue: 0
+    _targetStatus: 0
