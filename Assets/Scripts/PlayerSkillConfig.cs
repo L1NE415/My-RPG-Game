@@ -65,8 +65,9 @@ public class SkillInitData
     [Min(1)] public int HitCount = 1;
     [Range(0f, 1f)] public float GuardDamageMultiplier = 0.5f;
     [Min(0f)] public float NextAttackDamageBonus;
+    [Min(0)] public int EnergyCost;
 
     /// <summary>Creates a new RuntimeSkill from this init data.</summary>
     public RuntimeSkill ToRuntimeSkill() =>
-        new(Id, DisplayName, Category, BasePower, HitCount, GuardDamageMultiplier, NextAttackDamageBonus);
+        new(Id, DisplayName, Category, BasePower, HitCount, GuardDamageMultiplier, NextAttackDamageBonus, EnergyCost);
 }

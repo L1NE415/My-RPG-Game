@@ -37,6 +37,10 @@ public class PlayerBattleActions : MonoBehaviour
     [SerializeField] private GameObject actionMenuRoot;
     [SerializeField] private bool autoFindActionMenu = true;
 
+    [Header("Skill Button UIs")]
+    [SerializeField] private SkillButtonUI[] skillButtonUIs;
+    [SerializeField] private SkillId[] skillButtonIds;
+
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private SpriteRenderer enemySpriteRenderer;
@@ -94,6 +98,8 @@ public class PlayerBattleActions : MonoBehaviour
         {
             enemyHealth.Defeated += HandleEnemyDefeated;
         }
+
+        RefreshSkillButtonUIs();
     }
 
     private void OnDestroy()
@@ -178,6 +184,7 @@ public class PlayerBattleActions : MonoBehaviour
         }
 
         ResetSortingOrder();
+        SetActionMenuInteractable(true);
     }
 
     private IEnumerator AttackRoutine(bool useSecondAttack)
@@ -214,21 +221,26 @@ public class PlayerBattleActions : MonoBehaviour
             if (useSecondAttack)
             {
                 RuntimeSkill skill = skillSet.GetSkill(SkillId.DoubleAttack);
-                int damagePerHit = GetModifiedDamage(skill.DamagePerHit);
-                for (int hitIndex = 0; hitIndex < skill.HitCount; hitIndex++)
+                if (skill != null)
                 {
-                    enemyHealth.TakeDamage(damagePerHit);
-
-                    if (enemyHealth.IsDefeated)
+                    int damagePerHit = GetModifiedDamage(skill.DamagePerHit, SkillId.DoubleAttack);
+                    int totalDealt = 0;
+                    for (int hitIndex = 0; hitIndex < skill.HitCount; hitIndex++)
                     {
-                        break;
+                        totalDealt += enemyHealth.TakeDamage(damagePerHit);
+                        if (enemyHealth.IsDefeated) break;
                     }
+                    ApplyLifesteal(SkillId.DoubleAttack, totalDealt);
                 }
             }
             else
             {
                 RuntimeSkill skill = skillSet.GetSkill(SkillId.Attack);
-                enemyHealth.TakeDamage(GetModifiedDamage(skill.BasePower));
+                if (skill != null)
+                {
+                    int dealt = enemyHealth.TakeDamage(GetModifiedDamage(skill.BasePower, SkillId.Attack));
+                    ApplyLifesteal(SkillId.Attack, dealt);
+                }
             }
 
             nextAttackDamageMultiplier = 1f;
@@ -262,7 +274,10 @@ public class PlayerBattleActions : MonoBehaviour
         animator.SetBool(IsMovingHash, false);
         FaceEnemy();
         RuntimeSkill guardSkill = skillSet.GetSkill(SkillId.Guard);
-        playerHealth?.SetGuardDamageMultiplier(guardSkill.GuardDamageMultiplier);
+        if (guardSkill != null)
+        {
+            playerHealth?.SetGuardDamageMultiplier(guardSkill.GuardDamageMultiplier);
+        }
         playerHealth?.SetGuarding(true);
         animator.SetBool(IsGuardingHash, true);
 
@@ -288,7 +303,7 @@ public class PlayerBattleActions : MonoBehaviour
         FaceEnemy();
 
         RuntimeSkill boostSkill = skillSet.GetSkill(SkillId.Boost);
-        if (boostSkill.NextAttackDamageBonus > 0f)
+        if (boostSkill != null && boostSkill.NextAttackDamageBonus > 0f)
         {
             nextAttackDamageMultiplier = Mathf.Max(nextAttackDamageMultiplier, 1f + boostSkill.NextAttackDamageBonus);
             Debug.Log($"boost empowered next attack. Multiplier: {nextAttackDamageMultiplier}", this);
@@ -427,13 +442,48 @@ public class PlayerBattleActions : MonoBehaviour
         string log = skillSet.ApplyModifier(modifier);
         Debug.Log($"Modifier reward applied: {modifier.DisplayName}. {log}", this);
         ResetBattleForNextTry();
+        RefreshSkillButtonUIs();
     }
 
     public PlayerSkillSet SkillSet => skillSet;
 
-    private int GetModifiedDamage(int baseDamage)
+    private void ApplyLifesteal(SkillId skillId, int damageDealt)
     {
-        return Mathf.CeilToInt(baseDamage * nextAttackDamageMultiplier);
+        if (playerHealth == null || skillSet == null || damageDealt <= 0) return;
+
+        foreach (ModifierDefinition mod in skillSet.GetAppliedModifiers(skillId))
+        {
+            if (mod.EffectType == ModifierEffectType.Lifesteal)
+                playerHealth.Heal(Mathf.CeilToInt(damageDealt * mod.PrimaryValue));
+        }
+    }
+
+    private int GetModifiedDamage(int baseDamage, SkillId skillId)
+    {
+        float multiplier = nextAttackDamageMultiplier;
+
+        if (skillSet != null && playerHealth != null)
+        {
+            float hpRatio = playerHealth.MaxHealth > 0
+                ? (float)playerHealth.CurrentHealth / playerHealth.MaxHealth
+                : 1f;
+
+            foreach (ModifierDefinition mod in skillSet.GetAppliedModifiers(skillId))
+            {
+                switch (mod.EffectType)
+                {
+                    case ModifierEffectType.HighHpPowerBoost when hpRatio > mod.SecondaryValue:
+                        baseDamage += (int)mod.PrimaryValue;
+                        break;
+                    case ModifierEffectType.LowHpPowerBoost:
+                        int steps = Mathf.FloorToInt((1f - hpRatio) / mod.SecondaryValue);
+                        multiplier += steps * mod.PrimaryValue;
+                        break;
+                }
+            }
+        }
+
+        return Mathf.CeilToInt(baseDamage * multiplier);
     }
 
     private void ResetBattleForNextTry()
@@ -456,6 +506,22 @@ public class PlayerBattleActions : MonoBehaviour
         SetActionMenuInteractable(true);
 
         Debug.Log("Battle reset after reward selection. Player and enemy health restored for another test.", this);
+    }
+
+    private void RefreshSkillButtonUIs()
+    {
+        if (skillButtonUIs == null || skillSet == null) return;
+
+        int count = Mathf.Min(skillButtonUIs.Length, skillButtonIds?.Length ?? 0);
+        for (int i = 0; i < count; i++)
+        {
+            if (skillButtonUIs[i] == null) continue;
+
+            RuntimeSkill skill = skillSet.GetSkill(skillButtonIds[i]);
+            if (skill == null) continue;
+
+            skillButtonUIs[i].Bind(skill, skillSet.GetAppliedModifiers(skillButtonIds[i]));
+        }
     }
 
     private bool CanStartPlayerAction()

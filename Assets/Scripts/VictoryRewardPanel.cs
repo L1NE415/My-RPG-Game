@@ -22,6 +22,7 @@ public class VictoryRewardPanel : MonoBehaviour
     private List<ModifierDefinition> currentOptions = new();
     private int selectedIndex = -1;
     private bool initialized;
+    private bool rewardConsumed;
 
     private void Awake()
     {
@@ -39,6 +40,7 @@ public class VictoryRewardPanel : MonoBehaviour
         Initialize();
         playerBattleActions = rewardTarget;
         selectedIndex = -1;
+        rewardConsumed = false;
 
         currentOptions = rewardTarget.SkillSet != null
             ? rewardTarget.SkillSet.DrawRewardOptions(optionButtons.Length)
@@ -62,6 +64,8 @@ public class VictoryRewardPanel : MonoBehaviour
 
     public void ConfirmSelection()
     {
+        if (rewardConsumed) return;
+
         if (selectedIndex < 0 || selectedIndex >= currentOptions.Count)
         {
             Debug.LogWarning("VictoryRewardPanel confirm ignored: no reward is selected.", this);
@@ -74,6 +78,7 @@ public class VictoryRewardPanel : MonoBehaviour
             return;
         }
 
+        rewardConsumed = true;
         playerBattleActions.ApplyModifierReward(currentOptions[selectedIndex]);
         Hide();
     }

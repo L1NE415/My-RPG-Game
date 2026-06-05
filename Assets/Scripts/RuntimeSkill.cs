@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
@@ -12,7 +11,7 @@ public class RuntimeSkill
     [SerializeField] private int hitCount = 1;
     [SerializeField] private float guardDamageMultiplier = 0.5f;
     [SerializeField] private float nextAttackDamageBonus;
-    [SerializeField] private List<SkillModifier> modifiers = new();
+    [SerializeField] private int energyCost;
 
     public RuntimeSkill(
         SkillId id,
@@ -21,7 +20,8 @@ public class RuntimeSkill
         int basePower = 0,
         int hitCount = 1,
         float guardDamageMultiplier = 0.5f,
-        float nextAttackDamageBonus = 0f)
+        float nextAttackDamageBonus = 0f,
+        int energyCost = 0)
     {
         this.id = id;
         this.displayName = displayName;
@@ -30,6 +30,7 @@ public class RuntimeSkill
         this.hitCount = Mathf.Max(1, hitCount);
         this.guardDamageMultiplier = Mathf.Clamp01(guardDamageMultiplier);
         this.nextAttackDamageBonus = Mathf.Max(0f, nextAttackDamageBonus);
+        this.energyCost = Mathf.Max(0, energyCost);
     }
 
     public SkillId Id                           => id;
@@ -39,7 +40,7 @@ public class RuntimeSkill
     public int HitCount                         => hitCount;
     public float GuardDamageMultiplier          => guardDamageMultiplier;
     public float NextAttackDamageBonus          => nextAttackDamageBonus;
-    public IReadOnlyList<SkillModifier> Modifiers => modifiers;
+    public int EnergyCost                        => energyCost;
 
     public int DamagePerHit
     {
@@ -50,31 +51,16 @@ public class RuntimeSkill
         }
     }
 
-    /// <summary>Increases base attack power and records the change.</summary>
-    public void AddPower(int amount)
-    {
-        basePower += amount;
-        modifiers.Add(new SkillModifier(SkillRewardType.AttackDamage, $"Power +{amount}", amount));
-    }
+    /// <summary>Permanently increases base attack power (used by accumulator modifiers).</summary>
+    public void AddPower(int amount) => basePower += amount;
 
-    /// <summary>Increases hit count and records the change.</summary>
-    public void AddHitCount(int amount)
-    {
-        hitCount = Mathf.Max(1, hitCount + amount);
-        modifiers.Add(new SkillModifier(SkillRewardType.DoubleAttackHitCount, $"Hit Count +{amount}", amount));
-    }
+    /// <summary>Permanently increases hit count.</summary>
+    public void AddHitCount(int amount) => hitCount = Mathf.Max(1, hitCount + amount);
 
-    /// <summary>Reduces incoming damage while guarding and records the change.</summary>
-    public void AddGuardDamageReduction(float amount)
-    {
+    /// <summary>Permanently reduces incoming damage fraction while guarding.</summary>
+    public void AddGuardDamageReduction(float amount) =>
         guardDamageMultiplier = Mathf.Clamp01(guardDamageMultiplier - amount);
-        modifiers.Add(new SkillModifier(SkillRewardType.GuardDamageReduction, $"Guard Damage Reduction +{Mathf.RoundToInt(amount * 100f)}%", amount));
-    }
 
-    /// <summary>Increases the bonus applied to the next attack and records the change.</summary>
-    public void AddNextAttackDamageBonus(float amount)
-    {
-        nextAttackDamageBonus += amount;
-        modifiers.Add(new SkillModifier(SkillRewardType.BoostAttackPower, $"Next Attack Damage +{Mathf.RoundToInt(amount * 100f)}%", amount));
-    }
+    /// <summary>Permanently increases the next-attack damage bonus set by Boost.</summary>
+    public void AddNextAttackDamageBonus(float amount) => nextAttackDamageBonus += amount;
 }

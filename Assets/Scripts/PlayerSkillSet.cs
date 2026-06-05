@@ -22,6 +22,12 @@ public class PlayerSkillSet : MonoBehaviour
         InitializeSkills();
     }
 
+    /// <summary>Returns all ModifierDefinitions applied to the given skill this run.</summary>
+    public IReadOnlyList<ModifierDefinition> GetAppliedModifiers(SkillId skillId)
+        => modifierTracker != null
+            ? modifierTracker.GetAll(skillId)
+            : System.Array.Empty<ModifierDefinition>();
+
     /// <summary>Returns the RuntimeSkill matching the given ID, or null if not found.</summary>
     public RuntimeSkill GetSkill(SkillId skillId)
     {
@@ -82,6 +88,8 @@ public class PlayerSkillSet : MonoBehaviour
 
     /// <summary>
     /// Applies a modifier to the first skill whose category matches and that still has an open slot.
+    /// Stat-mutation types (FlatPowerBoost, HitCountIncrease, FlatGuardReduction, NextAttackDamageBoost)
+    /// permanently update the RuntimeSkill immediately on application.
     /// Returns a log string describing the result.
     /// </summary>
     public string ApplyModifier(ModifierDefinition def)
@@ -94,7 +102,27 @@ public class PlayerSkillSet : MonoBehaviour
             return $"No available slot for '{def.DisplayName}' (Category: {def.ApplicableCategory}).";
 
         modifierTracker.Add(target.Id, def);
+        ApplyStatMutation(target, def);
         return $"'{def.DisplayName}' applied to {target.DisplayName}.";
+    }
+
+    private static void ApplyStatMutation(RuntimeSkill skill, ModifierDefinition def)
+    {
+        switch (def.EffectType)
+        {
+            case ModifierEffectType.FlatPowerBoost:
+                skill.AddPower((int)def.PrimaryValue);
+                break;
+            case ModifierEffectType.HitCountIncrease:
+                skill.AddHitCount((int)def.PrimaryValue);
+                break;
+            case ModifierEffectType.FlatGuardReduction:
+                skill.AddGuardDamageReduction(def.PrimaryValue);
+                break;
+            case ModifierEffectType.NextAttackDamageBoost:
+                skill.AddNextAttackDamageBonus(def.PrimaryValue);
+                break;
+        }
     }
 
     private RuntimeSkill FindSkillForModifier(ModifierDefinition def)

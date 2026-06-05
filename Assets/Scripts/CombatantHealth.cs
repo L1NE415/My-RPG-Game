@@ -15,6 +15,8 @@ public class CombatantHealth : MonoBehaviour
     private bool defeatNotified;
 
     public bool IsDefeated => currentHealth <= 0;
+    public int CurrentHealth => currentHealth;
+    public int MaxHealth => maxHealth;
     public event Action<CombatantHealth> Defeated;
 
     private void Awake()
@@ -44,7 +46,8 @@ public class CombatantHealth : MonoBehaviour
         Debug.Log($"{name} health reset. HP: {currentHealth}/{maxHealth}", this);
     }
 
-    public void TakeDamage(int damage)
+    /// <summary>Deals damage, applying guard reduction if active. Returns the amount of HP actually lost.</summary>
+    public int TakeDamage(int damage)
     {
         int finalDamage = isGuarding ? Mathf.CeilToInt(damage * guardDamageMultiplier) : damage;
         currentHealth = Mathf.Max(currentHealth - finalDamage, 0);
@@ -57,6 +60,17 @@ public class CombatantHealth : MonoBehaviour
             defeatNotified = true;
             Defeated?.Invoke(this);
         }
+
+        return finalDamage;
+    }
+
+    /// <summary>Restores HP up to the maximum. Has no effect if already at full HP.</summary>
+    public void Heal(int amount)
+    {
+        if (amount <= 0) return;
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        RefreshUI();
+        Debug.Log($"{name} healed {amount} HP. HP: {currentHealth}/{maxHealth}", this);
     }
 
     private void RefreshUI()

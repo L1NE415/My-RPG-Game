@@ -82,3 +82,163 @@ Assets/Tiny Swords/Units/Blue Units/Warrior/Warrior Blue Animations/Warrior_Atta
 Packages/packages-lock.json
 ---
 
+## Session End: 20260529_111608
+### Commits
+912d317 Skillset Modification Logic Update
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/VictoryRewardPanel.cs
+---
+
+## Session End: 20260531_224953
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260531_225512
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260531_230058
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260531_230221
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/SkillModifier.cs
+Assets/Scripts/SkillModifier.cs.meta
+Assets/Scripts/SkillRewardType.cs
+Assets/Scripts/SkillRewardType.cs.meta
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260531_231149
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/SkillModifier.cs
+Assets/Scripts/SkillModifier.cs.meta
+Assets/Scripts/SkillRewardType.cs
+Assets/Scripts/SkillRewardType.cs.meta
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260531_231831
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/ModifierEffectType.cs
+Assets/Scripts/ModifierLibrary.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/SkillModifier.cs
+Assets/Scripts/SkillModifier.cs.meta
+Assets/Scripts/SkillRewardType.cs
+Assets/Scripts/SkillRewardType.cs.meta
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260531_232218
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/ModifierEffectType.cs
+Assets/Scripts/ModifierLibrary.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/SkillModifier.cs
+Assets/Scripts/SkillModifier.cs.meta
+Assets/Scripts/SkillRewardType.cs
+Assets/Scripts/SkillRewardType.cs.meta
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260602_001833
+### Uncommitted Changes
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/ModifierEffectType.cs
+Assets/Scripts/ModifierLibrary.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/SkillModifier.cs
+Assets/Scripts/SkillModifier.cs.meta
+Assets/Scripts/SkillRewardType.cs
+Assets/Scripts/SkillRewardType.cs.meta
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260602_020327
+### Uncommitted Changes
+Assets/Scenes/SampleScene.unity
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/ModifierEffectType.cs
+Assets/Scripts/ModifierLibrary.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/SkillModifier.cs
+Assets/Scripts/SkillModifier.cs.meta
+Assets/Scripts/SkillRewardType.cs
+Assets/Scripts/SkillRewardType.cs.meta
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
+## Session End: 20260602_021151
+### Uncommitted Changes
+Assets/Scenes/SampleScene.unity
+Assets/Scripts/CombatantHealth.cs
+Assets/Scripts/ModifierEffectType.cs
+Assets/Scripts/ModifierLibrary.cs
+Assets/Scripts/PlayerBattleActions.cs
+Assets/Scripts/PlayerSkillConfig.cs
+Assets/Scripts/PlayerSkillSet.cs
+Assets/Scripts/RuntimeSkill.cs
+Assets/Scripts/SkillModifier.cs
+Assets/Scripts/SkillModifier.cs.meta
+Assets/Scripts/SkillRewardType.cs
+Assets/Scripts/SkillRewardType.cs.meta
+Assets/Scripts/VictoryRewardPanel.cs
+Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+production/session-logs/session-log.md
+---
+
