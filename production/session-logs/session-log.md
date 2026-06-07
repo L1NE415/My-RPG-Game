@@ -262,3 +262,8 @@ production/session-logs/agent-audit.log
 production/session-logs/session-log.md
 ---
 
+## Session End: 20260607_165928
+### Commits
+7121ef2 fix: correct PlayerSkillConfig skill data and add EnergyCost field
+---
+
