@@ -18,8 +18,9 @@ MonoBehaviour:
     Category: 0
     BasePower: 20
     HitCount: 1
-    GuardDamageMultiplier: 0.5
+    GuardDamageMultiplier: 0
     NextAttackDamageBonus: 0
+    EnergyCost: 0
   - Id: 1
     DisplayName: Double-Attack
     Category: 0
@@ -27,13 +28,15 @@ MonoBehaviour:
     HitCount: 2
     GuardDamageMultiplier: 0.5
     NextAttackDamageBonus: 0
+    EnergyCost: 0
   - Id: 2
     DisplayName: Guard
     Category: 1
     BasePower: 0
     HitCount: 1
-    GuardDamageMultiplier: 0.5
+    GuardDamageMultiplier: 0.506
     NextAttackDamageBonus: 0
+    EnergyCost: 0
   - Id: 3
     DisplayName: Boost
     Category: 2
@@ -41,3 +44,4 @@ MonoBehaviour:
     HitCount: 1
     GuardDamageMultiplier: 0.5
     NextAttackDamageBonus: 0
+    EnergyCost: 0
